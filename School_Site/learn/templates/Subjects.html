@@ -10,6 +10,11 @@
                     <h3>Core Subjects</h3>
                     <div>
                         <ul>
+                            {% for key, value in core_subjects.items %}
+                                <li>
+                                    <a href="{% url 'learn:'|add:value  %}">{{ key }}</a>
+                                </li>
+                            {% endfor %}
                             <!--Use  dictionary with subject-URL to list the subjects -->
                         </ul>
                     </div>
@@ -21,6 +26,7 @@
                     <h3>General Science Electives:</h3>
                     <div>
                         <ul>
+                            <li></li>
                             <!--Use  dictionary with subject-URL to list the subjects -->
                         </ul>
                     </div>

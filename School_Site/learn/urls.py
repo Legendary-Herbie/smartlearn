@@ -1,8 +1,9 @@
 from django.urls import path
 from . import views
 
-APP_NAME = 'learn'
-URL_PATTERNS = [
+app_name = 'learn'
+
+urlpatterns =  [
     path('', views.home, name = 'Home'),
     path('Subjects/', views.subjects, name = 'Subjects'),
     path('Profile/',views.userprofile, name = 'Profile'),

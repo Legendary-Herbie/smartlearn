@@ -14,12 +14,12 @@
 <body>
     <main>
         <nav>
-            <img class = 'favicon' src="{% url 'static/assets/images/fav.png' %}" alt="Presec Legon Badge">
-            <a href="{% url 'Home' %}">🏠Home</a>
-            <a href="{% url 'Profile' %}">Profile</a>
-            <a href="{% url 'Subjects' %}">📚Subjects</a>
-            <a href="{% url 'Resources' %}">Resources</a>
-            <a href="{% url 'News' %}">News</a>
+            <img class = 'favicon' src="{% static 'static/assets/images/fav.png' %}" alt="Presec Legon Badge">
+            <a href="{% url 'learn:Home' %}">🏠Home</a>
+            <a href="{% url 'learn:Profile' %}">Profile</a>
+            <a href="{% url 'learn:Subjects' %}">📚Subjects</a>
+            <a href="{% url 'learn:Resources' %}">Resources</a>
+            <a href="{% url 'learn:News' %}">News</a>
           
         </nav>
         {% block content %}
