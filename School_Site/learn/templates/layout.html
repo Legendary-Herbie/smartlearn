@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            Presec Study Page
+        {% endblock  %}    
+    </title>
+</head>
+<body>
+    <main>
+        <nav>
+            <img class = 'favicon' src="{% url 'static/assets/images/fav.png' %}" alt="Presec Legon Badge">
+            <a href="{% url 'Home' %}">🏠Home</a>
+            <a href="{% url 'Profile' %}">Profile</a>
+            <a href="{% url 'Subjects' %}">📚Subjects</a>
+            <a href="{% url 'Resources' %}">Resources</a>
+            <a href="{% url 'News' %}">News</a>
+          
+        </nav>
+        {% block content %}
+        
+        <div class= "announcement">
+            <h1>COMING SOON</h1>
+        </div>
+
+        {% endblock  %}
+    </main>
+    
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+
+        {% block title %}
+            Presec Homepage
+        {% endblock  %}
+
+        {% block content %}
+            <h1>Official Presec Websites for students</h1>
+            <section class="intro">
+                <h2>Learn Harder, The Smart Way</h2>
+                <p>Interactive tools and curated resources for students.</p>
+                <div class="cta-buttons">
+                    <a class="btn primary" href="{% url 'learn:Subjects' %}">Explore Subjects</a>
+                    <a class="btn secondary" href="{% url 'learn:CreatePlan' %}">Create a Study Plan</a>
+                </div>
+            </section>
+
+            <section class="features">
+                <h3>Study Tools</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>⏱️ Time Management Tools</h4>
+                        <p>Organize your study sessions efficiently.</p>
+                    </div>
+                    <div class="card">
+                        <h4><a href="{% url 'learn:Progess' %}">🎯 Progress Tracker</a></h4>
+                        <p>Monitor your learning goals and achievement.</p>
+                    </div>
+                    <div class="card">
+                        <h4>🧠 Memory Boost/Recall</h4>
+                        <p>Improve retention with flashcards and quizzes.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="subjects">
+                <h3>Subjects</h3>
+                <div class="subject-grid">
+                    <a class="subject" href="{% url 'learn:Core_Mathematics' %}">Core-Mathematics</a>
+                    <a class="subject" href="{% url 'learn:English' %}">English</a>
+                    <a class="subject" href="{% url 'learn:Integrated_Science' %}">Integrated Science</a>
+                    <a class="subject" href="{% url 'learn:Social_Studies' %}">Social Studies</a>
+                    <a class="subject" href="{% url 'learn:Core_ICT' %}">Core-ICT</a>
+            </section>
