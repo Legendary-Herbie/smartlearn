@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+
 # Subject name to URL mapping for each course
 CORE_SUBJECTS = {
     'Core Mathematics': 'CoreMathematics',
@@ -33,15 +34,39 @@ GENERAL_ARTS_ELECTIVES = {
     'History': 'History',
 }
 
+subjectslist = [
+    'Accounting',
+    'Biology',
+    'Business Management',
+    'Chemistry',
+    'Christian Religious Studies (CRS)',
+    'Core ICT',
+    'Core Mathematics',
+    'Costing',
+    'Economics',
+    'Elective Mathematics',
+    'English',
+    'French',
+    'Geography',
+    'Government',
+    'History',
+    'Integrated Science',
+    'Literature',
+    'Physics',
+    'Social Studies'
+    ]
+
 def home(request):
     return render(request,'HomePage.html')
 
 def subjects(request):
-    return render(request, 'Subjects.html',{
+    return render(request, 'Subjects.html',
+    {
         'core_subjects': CORE_SUBJECTS,
         'general_science_electives' : GENERAL_SCIENCE_ELECTIVES,
         'business_electives' : BUSINESS_ELECTIVES,
-        'general_arts_electives' : GENERAL_ARTS_ELECTIVES})
+        'general_arts_electives' : GENERAL_ARTS_ELECTIVES
+    })
 
 def resources(request):
     return render(request,'Resources.html')
@@ -56,7 +81,7 @@ def progress(request):
     return render(request,'Progress.html')
 
 def createplan(request):
-    return render(request,'CreatePlan.html')
+    return render(request,'CreatePlan.html', {'subjects': subjectslist} )
 
 def about(request):
     return render(request,'About.html')

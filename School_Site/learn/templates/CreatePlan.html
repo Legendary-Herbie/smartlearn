@@ -1,5 +1,50 @@
 {% extends 'layout.html' %}
 
-        {% block title %}
-            Create A Study Plan
-        {% endblock %}
+{% block title %}
+    Create A Study Plan
+{% endblock %}
+
+{% block content %}
+    <div class="study-plan-form section-block">
+        <h1>Create A Study Plan</h1>
+        <form method="POST" action="{% url 'learn:Home' %}">
+            {% csrf_token %}
+            <div>
+                <input name="subject" type="text" list="sublist" placeholder="Select a subject." required>
+                <datalist id="sublist">
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject}}</option>
+                    {% endfor %}
+                </datalist>
+                {% if not subjects %}
+                    <div class="alert alert-warning mt-2">
+                        Subjects currently not available
+                    </div>
+                {% endif %}
+            </div>
+            <div>
+                <label for="goal">Study Goals:</label><br>
+                <textarea id="goal" name="goal" placeholder="E.g., Complete Mole-Concept "></textarea>
+            </div>
+            <div>
+                <label for="days">How many days per week do you plan to spend?</label>
+                <input type="number" id="days" name="days" min="1" max="7" value="4">
+                <br>
+                <label for="hours"> How many hours in each day will you use?<br>:</label>
+                <input type="number" id="hours" name="hours" min="1" max="7" value="2">
+            </div>
+            <br>
+            <button type="submit" class="btn primary">Create Plan</button>
+        </form>
+        {% if message %}
+            <div class="alert alert-success mt-3">
+                {{ message }}
+            </div>
+        {% endif %}
+        {% if error %}
+            <div class="alert alert-danger mt-3">
+                {{ error }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,46 +1,51 @@
 {% extends "layout.html" %}
 
+{% block title %}
+    Presec Homepage
+{% endblock  %}
 
-        {% block title %}
-            Presec Homepage
-        {% endblock  %}
+{% block content %}
+    <section class="hero section-block" style="background-color:#e9f2ff; padding: 20px; text-align: center;">
+        <h1>Official Presec Website for students</h1>
+        <h2>Learn Harder, The Smart Way</h2>
+        <p>Interactive tools and curated resources for students.</p>
+        <div class="cta-buttons">
+            <a class="btn primary" href="{% url 'learn:Subjects' %}">Explore Subjects</a>
+            <a class="btn secondary" href="{% url 'learn:CreatePlan' %}">Create a Study Plan</a>
+        </div>
+    </section>
 
-        {% block content %}
-            <h1>Official Presec Websites for students</h1>
-            <section class="intro">
-                <h2>Learn Harder, The Smart Way</h2>
-                <p>Interactive tools and curated resources for students.</p>
-                <div class="cta-buttons">
-                    <a class="btn primary" href="{% url 'learn:Subjects' %}">Explore Subjects</a>
-                    <a class="btn secondary" href="{% url 'learn:CreatePlan' %}">Create a Study Plan</a>
+    <section class="features section-block">
+        <h3>Study Tools</h3>
+        <div class="grid">
+                <div class="card" style ="border: 1px solid #ccc; padding: 5px; border-radius: 8px; border-color: #007bff;">
+                    <h4><a href = "#">⏱️ Time Management Tools</a></h4>
+                    <p>Organize your study sessions efficiently.</p>
                 </div>
-            </section>
-
-            <section class="features">
-                <h3>Study Tools</h3>
-                <div class="grid">
-                    <div class="card">
-                        <h4>⏱️ Time Management Tools</h4>
-                        <p>Organize your study sessions efficiently.</p>
-                    </div>
-                    <div class="card">
-                        <h4><a href="{% url 'learn:Progress' %}">🎯 Progress Tracker</a></h4>
-                        <p>Monitor your learning goals and achievement.</p>
-                    </div>
-                    <div class="card">
-                        <h4>🧠 Memory Boost/Recall</h4>
-                        <p>Improve retention with flashcards and quizzes.</p>
-                    </div>
+                <div class="card" style ="border: 1px solid #ccc; padding: 5px; border-radius: 8px; border-color: #007bff;">
+                    <h4><a href="{% url 'learn:Progress' %}">🎯 Progress Tracker</a></h4>
+                    <p>Monitor your learning goals and achievement.</p>
                 </div>
-            </section>
+                <div class="card" style ="border: 1px solid #ccc; padding: 5px; border-radius: 8px; border-color: #007bff;">
+                    <h4><a href="#">🧠 Memory Boost/Recall</a></h4>
+                    <p>Improve retention with flashcards and quizzes.</p>
+                </div>
+            
+                <div class="card" style ="border: 1px solid #ccc; padding: 5px; border-radius: 8px; border-color: #007bff;">
+                    <h4><a href = "{% url 'learn:Resources' %}">📚 Resource Library</a></h4>
+                    <p>Access a wide range of study materials.</p>
+                </div>
+        </div>
+    </section>
 
-            <section class="subjects">
-                <h3>Subjects</h3>
-                <div class="subject-grid">
-                    <a class="subject" href="{% url 'learn:CoreMathematics' %}">Core-Mathematics</a>
-                    <a class="subject" href="{% url 'learn:English' %}">English</a>
-                    <a class="subject" href="{% url 'learn:IntegratedScience' %}">Integrated Science</a>
-                    <a class="subject" href="{% url 'learn:SocialStudies' %}">Social Studies</a>
-                    <a class="subject" href="{% url 'learn:Core_ICT' %}">Core-ICT</a>
-            </section>
-        {% endblock %}
+    <section class="subjects section-block">
+        <h3>Subjects</h3>
+        <div class="subject-grid">
+            <a class="subject" href="{% url 'learn:CoreMathematics' %}">Core-Mathematics</a>
+            <a class="subject" href="{% url 'learn:English' %}">English</a>
+            <a class="subject" href="{% url 'learn:IntegratedScience' %}">Integrated Science</a>
+            <a class="subject" href="{% url 'learn:SocialStudies' %}">Social Studies</a>
+            <a class="subject" href="{% url 'learn:Core_ICT' %}">Core-ICT</a>
+        </div>
+    </section>
+{% endblock %}
