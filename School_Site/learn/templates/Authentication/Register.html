@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock  %}
+
+{% block title %}
+    Register User
+{% endblock  %}
+
+{% block content%}
+
+    <section class="auth-form">
+        <h2>Register</h2>
+
+        <form method='POST' class="form">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <button class="btn-submit">
+                <span class="register">Register</span>
+            </button>
+        </form>
+
+        <div class="redirect">
+            <a href="{% url 'learn:Login' %}">Already have an account? Login.</a>
+        </div>
+    </section>
+
+{% endblock %}

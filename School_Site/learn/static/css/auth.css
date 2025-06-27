@@ -1,0 +1,72 @@
+.auth-form {
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+.auth-form h2 {
+  text-align: center;
+}
+.auth-form form {
+  margin-bottom: 1.5rem;
+}
+.auth-form form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #0174c0;
+}
+.auth-form form input, .auth-form form select, .auth-form form textarea {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.auth-form form input:focus, .auth-form form select:focus, .auth-form form textarea:focus {
+  border-color: #0174c0;
+  outline: none;
+}
+.auth-form form textarea {
+  height: 100px;
+  resize: vertical;
+}
+.auth-form button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.auth-form button.btn-submit {
+  background: #0174c0;
+  color: #fff;
+}
+.auth-form button.btn-submit:hover {
+  background: #01558d;
+}
+.auth-form button.secondary {
+  background: #f1f1f1;
+  color: #0174c0;
+}
+.auth-form button.secondary:hover {
+  background: #12e7dd;
+}
+
+.redirect {
+  text-align: center;
+  margin-top: 2rem;
+}
+.redirect a {
+  color: #0174c0;
+  text-decoration: none;
+}
+.redirect a:hover {
+  color: #12e7dd;
+  text-decoration: underline;
+}/*# sourceMappingURL=auth.css.map */

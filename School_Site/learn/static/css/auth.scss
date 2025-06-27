@@ -1,0 +1,75 @@
+$primary-color: #0174c0;
+$secondary-color: #12e7dd;
+
+//forms
+.auth-form {
+    max-width: 420px;
+    margin: 2rem auto;
+    padding: 2rem 1.5rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    h2 {
+        text-align: center;
+    }
+    form {
+        margin-bottom: 1.5rem;
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: $primary-color;
+        }
+        input, select, textarea {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            &:focus {
+                border-color: $primary-color;
+                outline: none;
+            }
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+    }
+    button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        &.btn-submit {
+            background: $primary-color;
+            color: #fff;
+            &:hover {
+                background: darken($primary-color, 10%);
+            }
+        }
+        &.secondary {
+            background: #f1f1f1;
+            color: $primary-color;
+            &:hover {
+                background: $secondary-color;
+            }
+        }
+    }
+}
+.redirect {
+    text-align: center;
+    margin-top: 2rem;
+    a {
+        color: $primary-color;
+        text-decoration: none;
+        &:hover {
+            color:$secondary-color;
+            text-decoration: underline;
+        }
+    }
+}

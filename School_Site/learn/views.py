@@ -1,6 +1,13 @@
-from django.shortcuts import render
-
-# Create your views here.
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from .forms import UserRegisterForm
+from .models import UserProfile, Plan
+from django.contrib.auth import login, logout as django_logout
+from django.views.generic import DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Subject name to URL mapping for each course
 CORE_SUBJECTS = {
@@ -12,52 +19,44 @@ CORE_SUBJECTS = {
 }
 
 GENERAL_SCIENCE_ELECTIVES = {
-    'Biology': 'Biology',
-    'Chemistry': 'Chemistry',
-    'Physics': 'Physics',
-    'Elective Mathematics': 'ElectiveMathematics',
+    'Biology': 'Biology', 'Chemistry': 'Chemistry', 'Physics': 'Physics', 'Elective Mathematics': 'ElectiveMathematics',
 }
 
 BUSINESS_ELECTIVES = {
-    'Accounting': 'Accounting',
-    'Business Management': 'BusinessManagement',
-    'Costing': 'Costing',
-    'Economics': 'Economics',
+    'Accounting': 'Accounting', 'Business Management': 'BusinessManagement', 'Costing': 'Costing', 'Economics': 'Economics',
 }
 
 GENERAL_ARTS_ELECTIVES = {
-    'Christian Religious Studies': 'CRS',
-    'Literature': 'Literature',
-    'French': 'French',
-    'Geography': 'Geography',
-    'Government': 'Government',
-    'History': 'History',
+    'Christian Religious Studies': 'CRS', 'Literature': 'Literature', 'French': 'French', 'Geography': 'Geography', 'Government': 'Government', 'History': 'History',
 }
 
 subjectslist = [
-    'Accounting',
-    'Biology',
-    'Business Management',
-    'Chemistry',
-    'Christian Religious Studies (CRS)',
-    'Core ICT',
-    'Core Mathematics',
-    'Costing',
-    'Economics',
-    'Elective Mathematics',
-    'English',
-    'French',
-    'Geography',
-    'Government',
-    'History',
-    'Integrated Science',
-    'Literature',
-    'Physics',
-    'Social Studies'
+    'Accounting', 'Biology', 'Business Management', 'Chemistry', 'Christian Religious Studies (CRS)', 'Core ICT', 'Core Mathematics', 'Costing', 'Economics', 'Elective Mathematics', 'English', 'French', 'Geography', 'Government', 'History', 'Integrated Science', 'Literature', 'Physics', 'Social Studies'
     ]
 
 def home(request):
-    return render(request,'HomePage.html')
+    userprofile = UserProfile.objects.filter(user=request.user).first() if request.user.is_authenticated else None
+    if request.user.is_authenticated:
+        message = messages.success(request, f'Welcome back, {request.user.username}')
+    else:
+        message = messages.info(request, 'Welcome to the School Site! Please log in or register.')
+    context = {
+        'message' : message,
+        'userprofile': userprofile,
+        'is_authenticated': request.user.is_authenticated,
+        'user': request.user,
+    }
+    if request.method == 'POST':
+        current_user = request.user
+        subject = request.POST['subject']
+        goal= request.POST['goal']
+        days = int(request.POST['days'])
+        hours = int(request.POST['hours'])
+        start = request.POST['start']
+        end = request.POST['end']
+        new_plan = Plan(user = current_user, subject = subject , goal = goal, days = days, hours = hours, start_date = start, end_date = end)
+        new_plan.save()
+    return render(request, 'HomePage.html', context)
 
 def subjects(request):
     return render(request, 'Subjects.html',
@@ -68,20 +67,59 @@ def subjects(request):
         'general_arts_electives' : GENERAL_ARTS_ELECTIVES
     })
 
+@login_required
 def resources(request):
     return render(request,'Resources.html')
-    
-def userprofile(request):
-    return render(request,'Profile.html')
 
+class UserProfileView(LoginRequiredMixin, DetailView):
+    model = UserProfile
+    template_name = 'Profile.html'
+    context_object_name = 'user_data'
+
+    def get_object(self):
+        return get_object_or_404(UserProfile, user=self.request.user)
+
+
+@login_required
 def news(request):
     return render(request,'News.html')
 
+@login_required
 def progress(request):
     return render(request,'Progress.html')
 
+@login_required
 def createplan(request):
     return render(request,'CreatePlan.html', {'subjects': subjectslist} )
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Save the user profile with additional fields
+            user_profile = UserProfile(
+                user=user,
+                username=form.cleaned_data['username'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                email=form.cleaned_data['email'],
+                phone_no=form.cleaned_data.get('phone_no')
+            )
+            user_profile.save()
+            login(request, user)
+            return HttpResponseRedirect(reverse('Home'))
+        else: 
+            return render(request, 'Authentication/Login.html')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'Authentication/Register.html', {'form': form})
+
+def logout_view(request):
+    user = request.user
+    django_logout(request)
+    messages.success(request, f'You have been logged out, {user.username}.')
+    return redirect('learn:Home')
 
 def about(request):
     return render(request,'About.html')

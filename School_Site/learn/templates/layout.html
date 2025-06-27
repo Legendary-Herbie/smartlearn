@@ -7,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="icon" href="{% static 'assets/images/fav.png' %}" type="image/png">
+
+    {% block links%}
+<!-- Additional links will be added here -->
+    {% endblock %}
+    
     <title>
         {% block title %}
             Presec Study Page
@@ -17,15 +22,22 @@
     <main>
         <nav class="navbar">
             <div class="container">
-                <img class="favicon" src="{% static 'assets/images/fav.png' %}" alt="Presec Legon Badge" width="50" height="50">
-                <div class="navbar-burger" id="navbar-burger" tabindex="0" aria-label="Toggle navigation">
+                <div class="navbar-burger" id="navbarBurger" tabindex="0" aria-label="Toggle navigation">
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
-                <ul class="navbar-menu" id="navbar-menu">
+                <img class="favicon" src="{% static 'assets/images/fav.png' %}" alt="Presec Legon Badge" width="50" height="50">
+                <ul class="navbar-menu" id="navbarMenu">
                     <li><a href="{% url 'learn:Home' %}">🏠 Home</a></li>
-                    <li><a href="{% url 'learn:Profile' %}">Profile</a></li>
+                    <li class = "has-dropdown">
+                        <a href="{% url 'learn:Profile' %}">Profile</a>
+                        <ul class = "dropdown">
+                            <li><a href="/">Progress</a></li>
+                            <li><a href="/">Plans</a></li>
+                            <li><a href="{% url 'learn:Logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
                     <li class="has-dropdown">
                         <a href="{% url 'learn:Subjects' %}">📚 Subjects</a>
                         <ul class="dropdown">
@@ -38,6 +50,14 @@
                     <li><a href="{% url 'learn:Resources' %}">Resources</a></li>
                     <li><a href="{% url 'learn:News' %}">News</a></li>
                 </ul>
+                <div id = "user-tools">
+                {% if user.is_authenticated %}
+                    <span style = "text-align:right">Welcome, <strong>{{ user.username }}.</strong> </span>
+                {% else %}
+                    <a href="{% url 'learn:Login' %}">Login</a> |
+                    <a href="{% url 'learn:Register' %}">Sign Up</a>
+                {% endif %}
+                </div>
             </div>
         </nav>
         {% block content %}
@@ -47,19 +67,6 @@
         {% endblock  %}
     </main>
     <script src= "{% static 'js/navbar.js' %}"></script>
-    <script>
-    // Hamburger menu toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const burger = document.getElementById('navbar-burger');
-        const menu = document.getElementById('navbar-menu');
-        if (burger && menu) {
-            burger.addEventListener('click', function() {
-                burger.classList.toggle('is-active');
-                menu.classList.toggle('is-active');
-            });
-        }
-    });
-    </script>
     {% block scripts %}
     <!-- Additional scripts will be added here -->  
     {% endblock %}
@@ -68,6 +75,5 @@
         <p>&copy; 2023 Presec Legon. All rights reserved.</p>
         <p><a href = "{% url 'learn:About' %}">About Us</a></p>
     </footer>
-    <script src="{% static 'js/navbar.js' %}"></script>
 </body>
 </html>

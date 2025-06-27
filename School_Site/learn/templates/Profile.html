@@ -1,5 +1,27 @@
 {% extends "layout.html" %}
+{% load static %}
 
-        {% block tiltle %}
-            User Profile
-        {% endblock  %}
+{% block tiltle %}
+    User Profile
+{% endblock  %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+<div class="profile-container">
+    <img class="profile-avatar" src="#" alt="User Avatar">
+    <div class="profile-info">
+        <p>First Name: {{ request.user.first_name }}</p>
+        <p>Last Name: {{ request.user.last_name }}</p>
+        <p>Email: {{ request.user.email }}</p>
+    </div>
+    <div class="profile-actions">
+        <a href="{% url 'learn:Logout' %}">Log Out</a>
+    </div>
+</div>
+{% else %}
+<div class="profile-container">
+    <p>You must be logged in to view your profile.</p>
+    <a href="{% url 'learn:Login' %}">Login</a>
+</div>
+{% endif %}
+{% endblock %}

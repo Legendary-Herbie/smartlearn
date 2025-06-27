@@ -33,9 +33,22 @@
                 <label for="hours"> How many hours in each day will you use?<br>:</label>
                 <input type="number" id="hours" name="hours" min="1" max="7" value="2">
             </div>
+            <div>
+                <label for="start">Start Date</label>
+                <input type="date" name="start" id="start_date" min = "" required>
+                <label for="end">End Date</label>
+                <input type="date" name="end" id="end_date" required>
+            </div>
             <br>
             <button type="submit" class="btn primary">Create Plan</button>
         </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Set the start date to today
+                var today = new Date().toISOString().split('T')[0];
+                document.getElementById('start_date').min = today;
+            });
+        </script>
         {% if message %}
             <div class="alert alert-success mt-3">
                 {{ message }}

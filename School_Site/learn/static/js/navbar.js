@@ -1,12 +1,12 @@
 // Responsive navbar and dropdown logic
 
 document.addEventListener('DOMContentLoaded', function() {
-    const burger = document.querySelector('.navbar-burger');
-    const navMenu = document.querySelector('.navbar-menu');
+    const burger = document.getElementById('navbarBurger');
+    const navMenu = document.getElementById('navbarMenu');
     if (burger && navMenu) {
         burger.addEventListener('click', function() {
-            navMenu.classList.toggle('is-active');
-            burger.classList.toggle('is-active');
+            navMenu.classList.toggle('active');
+            burger.classList.toggle('active');
         });
     }
 
@@ -19,11 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.remove('is-open');
         });
         // For mobile
-        drop.querySelector('a').addEventListener('click', function(e) {
-            if (window.innerWidth < 700) {
-                e.preventDefault();
-                drop.classList.toggle('is-open');
-            }
-        });
+        const link = drop.querySelector('a');
+        if (link) {
+            link.addEventListener('click', function(e) {
+                if (window.innerWidth < 700) {
+                    e.preventDefault();
+                    drop.classList.toggle('is-open');
+                }
+            });
+        }
     });
 });
