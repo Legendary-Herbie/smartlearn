@@ -16,15 +16,3 @@ const Profile: React.FC = () => {
   );
 };
 export default Profile;
-import React from 'react';
-
-const SchoolProfile: React.FC = () => {
-    return (
-        <div>
-            <h1>School Profile</h1>
-            <p>Details about the school will be displayed here.</p>
-        </div>
-    );
-};
-
-export default SchoolProfile;

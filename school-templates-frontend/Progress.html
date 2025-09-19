@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracker</title>
+    <style>
+        /* General styles, CSS variables, and layout from index (3).html */
+        :root {
+            --primary: #4fa3f7;
+            --sidebar-bg: #2d3e50;
+            --sidebar-text: #fff;
+            --card-bg: #fff;
+            --card-radius: 18px;
+            --shadow: 0 2px 16px rgba(44,62,80,0.08);
+            --text-main: #2d3e50;
+            --bg: #f4f8fb;
+            --transition: 0.3s cubic-bezier(.4,0,.2,1);
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 0;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            width: 220px;
+            padding: 40px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+            box-shadow: none;
+        }
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            background: var(--sidebar-bg);
+            border: none;
+            color: var(--sidebar-text);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            z-index: 200;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+            transition: background var(--transition);
+        }
+        .sidebar-toggle:focus {
+            outline: 2px solid var(--primary);
+        }
+        .sidebar-toggle:hover {
+            background: #3a4a5a;
+        }
+        .sidebar button {
+            background: none;
+            border: none;
+            color: var(--sidebar-text);
+            font-size: 1.1em;
+            margin: 10px 0;
+            padding: 12px 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+            box-shadow: none;
+        }
+        .sidebar button.active, .sidebar button:focus {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .sidebar button:hover {
+            background: #3a4a5a;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0;
+            min-width: 0;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            padding: 32px 36px;
+            min-width: 340px;
+            max-width: 600px;
+            margin-top: 24px;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--transition), transform var(--transition);
+        }
+        .card.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .card h2 {
+            margin-top: 0;
+            color: var(--text-main);
+            font-size: 1.5em;
+        }
+        .overall-progress-container {
+            margin: 24px auto 0 auto;
+            max-width: 420px;
+            background: #eaf2fa;
+            border-radius: 8px;
+            padding: 18px 18px 10px 18px;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.06);
+            text-align: center;
+        }
+        .overall-progress-bar {
+            width: 100%;
+            background: #dbefff;
+            border-radius: 8px;
+            height: 18px;
+            margin: 10px 0 0 0;
+            overflow: hidden;
+        }
+        .overall-progress-bar-inner {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            color: #fff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.98em;
+            border-radius: 8px 0 0 8px;
+            transition: width var(--transition);
+        }
+        .topics-list {
+            list-style: none;
+            padding: 0;
+        }
+        .topics-list li {
+            font-size: 1.08em;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            transition: background var(--transition), box-shadow var(--transition);
+            padding: 4px 8px;
+        }
+        .topics-list li:hover, .topics-list li:focus-within {
+            background: #f0f6fd;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.06);
+        }
+        .topics-list input[type="checkbox"] {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            width: 18px;
+            height: 18px;
+            transition: box-shadow var(--transition);
+        }
+        .topics-list input[type="checkbox"]:focus {
+            outline: 2px solid var(--primary);
+            box-shadow: 0 0 0 2px #b3d8fd;
+        }
+        .done-btn {
+            margin-top: 18px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 28px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+            transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+        }
+        .done-btn:hover, .done-btn:focus {
+            background: #3a8be0;
+            transform: translateY(-2px) scale(1.03);
+        }
+        .progress-bar-container {
+            width: 100%;
+            background: #eaf2fa;
+            border-radius: 8px;
+            margin: 18px 0 8px 0;
+            height: 22px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.06);
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            color: #fff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 12px;
+            font-size: 1em;
+            border-radius: 8px 0 0 8px;
+            transition: width var(--transition), background var(--transition);
+        }
+        .progress-label {
+            margin-left: 8px;
+            font-size: 1em;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        /* New and improved styles from index (3).html */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 32px;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 1.08em;
+            box-shadow: 0 2px 16px rgba(44,62,80,0.18);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: opacity var(--transition), bottom var(--transition);
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+            bottom: 48px;
+        }
+        .topic-search {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #d0d8e0;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .reset-btn {
+            background: #fff;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 6px 18px;
+            font-size: 0.98em;
+            cursor: pointer;
+            margin-bottom: 10px;
+            margin-left: 8px;
+            transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+        }
+        .reset-btn:hover, .reset-btn:focus {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+        }
+        .collapsible-section {
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: #f7fafd;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.04);
+        }
+        .collapsible-toggle {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.08em;
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+        .collapsible-toggle[aria-expanded="true"] {
+            background: #eaf2fa;
+        }
+        .collapsible-toggle:focus {
+            outline: 2px solid var(--primary);
+        }
+        .collapsible-section .topics-list {
+            display: none;
+            padding-bottom: 8px;
+        }
+        .collapsible-section.open .topics-list {
+            display: block;
+        }
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(44,62,80,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px 28px 24px 28px;
+            box-shadow: 0 4px 32px rgba(44,62,80,0.18);
+            text-align: center;
+            min-width: 260px;
+            max-width: 90vw;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        #close-modal {
+            margin-top: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <header>
+        <h1>Progress Tracker</h1>
+        <h2 style="font-weight: 400; color: #4fa3f7;">Select a subject to check how ready you are for WASSCE</h2>
+    </header>
+    <div class="container">
+        <button class="sidebar-toggle" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false" tabindex="0">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect y="5" width="28" height="3.5" rx="1.75" fill="#fff"/><rect y="12" width="28" height="3.5" rx="1.75" fill="#fff"/><rect y="19" width="28" height="3.5" rx="1.75" fill="#fff"/></svg>
+        </button>
+        <nav class="sidebar" id="sidebar" aria-label="Subject navigation">
+            <button data-page="home" class="active" tabindex="0">Home</button>
+            <button data-page="emaths" tabindex="0">Elective Mathematics</button>
+            <button data-page="physics" tabindex="0">Physics</button>
+            <button data-page="chemistry" tabindex="0">Chemistry</button>
+            <button data-page="coremaths" tabindex="0">Core Mathematics</button>
+            <button data-page="biology" tabindex="0">Biology</button>
+            <button data-page="english" tabindex="0">English Language</button>
+        </nav>
+        <main class="main-content">
+            <div class="card active" id="home">
+                <h2>Welcome to the Progress Tracker</h2>
+                <p class="subtitle">Select a subject from the sidebar to check your readiness for WASSCE. Tick off topics as you master them and track your progress!</p>
+                <ul class="home-list">
+                    <li>Sidebar is always visible for easy navigation (tap the menu on mobile).</li>
+                    <li>Each subject has a checklist of topics and a progress bar.</li>
+                    <li>Progress is saved automatically. You can reset at any time.</li>
+                </ul>
+                <div class="overall-progress-container">
+                    <div style="font-weight:600; color:var(--primary);">Overall Progress</div>
+                    <div class="overall-progress-bar"><div class="overall-progress-bar-inner" id="overall-progress-bar" style="width:0%">0%</div></div>
+                    <button id="export-progress" class="reset-btn" style="margin-top:12px;">Export Progress</button>
+                </div>
+            </div>
+            <div class="card" id="emaths">
+                <h2>Elective Mathematics</h2>
+                <input type="text" class="topic-search" placeholder="Filter topics..." aria-label="Filter Elective Mathematics topics">
+                <button class="reset-btn" type="button" aria-label="Reset Elective Mathematics progress">Reset</button>
+                <div class="collapsible-section" data-section="algebra">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="emaths-algebra-list">Algebra</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="emaths-algebra-list">
+                        <li><input type="checkbox"> Sets and Operation on Sets</li>
+                        <li><input type="checkbox"> Algebra</li>
+                        <li><input type="checkbox"> Surds</li>
+                        <li><input type="checkbox"> Binary Operation</li>
+                        <li><input type="checkbox"> Relations and Functions</li>
+                        <li><input type="checkbox"> Quadratic Functions and Equations</li>
+                        <li><input type="checkbox"> Polynomial Functions</li>
+                        <li><input type="checkbox"> Rational Functions</li>
+                        <li><input type="checkbox"> Indices</li>
+                        <li><input type="checkbox"> Logarithims and Exponential Laws</li>
+                        <li><input type="checkbox"> Binomial Theorem</li>
+                        <li><input type="checkbox"> Inequalities and Linear Programming</li>
+                        <li><input type="checkbox"> Quadratic Inequalities</li>
+                        <li><input type="checkbox"> Logic</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="geometry">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="emaths-geometry-list">Geometry</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="emaths-geometry-list">
+                        <li><input type="checkbox"> Cordinate Geometry - The Straight Line</li>
+                        <li><input type="checkbox"> Cordinate Geometry - The Circle</li>
+                        <li><input type="checkbox"> Cordinate Geometry - The Parabola</li>
+                        <li><input type="checkbox"> Sequences And Series</li>
+                        <li><input type="checkbox"> Trignometry</li>
+                        <li><input type="checkbox"> Vectors</li>
+                        <li><input type="checkbox"> Matrices</li>
+                        <li><input type="checkbox"> Linear Transformation</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="calculus">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="emaths-calculus-list">Calculus</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="emaths-calculus-list">
+                        <li><input type="checkbox"> Differentiation</li>
+                        <li><input type="checkbox"> Applications of Differentiation</li>
+                        <li><input type="checkbox"> Integration</li>
+                        <li><input type="checkbox"> Applications of Integration</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="statistics">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="emaths-statistics-list">Statistics & Probability</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="emaths-statistics-list">
+                        <li><input type="checkbox"> Statistics</li>
+                        <li><input type="checkbox"> Correlation and Regression</li>
+                        <li><input type="checkbox"> Permutations and Combinations</li>
+                        <li><input type="checkbox"> Probality</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="mechanics">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="emaths-mechanics-list">Mechanics</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="emaths-mechanics-list">
+                        <li><input type="checkbox"> Mechanics</li>
+                    </ol>
+                </div>
+                <div class="progress-bar-container" aria-label="Progress for Elective Mathematics">
+                    <div class="progress-bar" id="progress-emaths" style="width:0%">0%</div>
+                </div>
+                <button class="done-btn" type="button">Done</button>
+            </div>
+            <div class="card" id="physics">
+                <h2>Physics</h2>
+                <input type="text" class="topic-search" placeholder="Filter topics..." aria-label="Filter Physics topics">
+                <button class="reset-btn" type="button" aria-label="Reset Physics progress">Reset</button>
+                <div class="collapsible-section" data-section="mechanics">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="physics-mechanics-list">Mechanics & Motion</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="physics-mechanics-list">
+                        <li><input type="checkbox"> Scientific Units and Measurement</li>
+                        <li><input type="checkbox"> Vectors</li>
+                        <li><input type="checkbox"> Particles in Motion (Kinematics)</li>
+                        <li><input type="checkbox"> Forces</li>
+                        <li><input type="checkbox"> Pressure</li>
+                        <li><input type="checkbox"> Concepts and Properties of Matter</li>
+                        <li><input type="checkbox"> Cicurlar and Rotational Motion</li>
+                        <li><input type="checkbox"> The Planets and Gravity</li>
+                        <li><input type="checkbox"> Simple Harmonic Motion</li>
+                        <li><input type="checkbox"> Energy, Work, Power, Machines and Engines</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="thermal">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="physics-thermal-list">Thermal Physics</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="physics-thermal-list">
+                        <li><input type="checkbox"> Temperature and its Measurement</li>
+                        <li><input type="checkbox"> Measurement of heat Energy</li>
+                        <li><input type="checkbox"> Transfer of Heat</li>
+                        <li><input type="checkbox"> Gases</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="waves">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="physics-waves-list">Waves & Optics</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="physics-waves-list">
+                        <li><input type="checkbox"> Propagation of light</li>
+                        <li><input type="checkbox"> Reflection at Plane Surfaces</li>
+                        <li><input type="checkbox"> Reflection at Curved Surfaces</li>
+                        <li><input type="checkbox"> Refration of Light Rays</li>
+                        <li><input type="checkbox"> Lenses</li>
+                        <li><input type="checkbox"> Optical Instruments</li>
+                        <li><input type="checkbox"> Fibre Optics</li>
+                        <li><input type="checkbox"> Wave Motion</li>
+                        <li><input type="checkbox"> Sound Waves</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="electricity">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="physics-electricity-list">Electricity & Magnetism</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="physics-electricity-list">
+                        <li><input type="checkbox"> Electric Cells</li>
+                        <li><input type="checkbox"> Electrostatics</li>
+                        <li><input type="checkbox"> Current Electricity</li>
+                        <li><input type="checkbox"> Magnetism</li>
+                        <li><input type="checkbox"> Magnetic Fields (Electrodynamics)</li>
+                        <li><input type="checkbox"> Electromagnetic Induction</li>
+                        <li><input type="checkbox"> Alternating Current Theory</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="modern">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="physics-modern-list">Modern Physics</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="physics-modern-list">
+                        <li><input type="checkbox"> Atomic Physics</li>
+                        <li><input type="checkbox"> Nuclear Physics</li>
+                        <li><input type="checkbox"> Electronics</li>
+                    </ol>
+                </div>
+                <div class="progress-bar-container" aria-label="Progress for Physics">
+                    <div class="progress-bar" id="progress-physics" style="width:0%">0%</div>
+                </div>
+                <button class="done-btn" type="button">Done</button>
+            </div>
+            <div class="card" id="chemistry">
+                <h2>Chemistry</h2>
+                <input type="text" class="topic-search" placeholder="Filter topics..." aria-label="Filter Chemistry topics">
+                <button class="reset-btn" type="button" aria-label="Reset Chemistry progress">Reset</button>
+                <div class="collapsible-section" data-section="basics">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="chemistry-basics-list">Chemistry Basics</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="chemistry-basics-list">
+                        <li><input type="checkbox"> Introduction to Chemistry</li>
+                        <li><input type="checkbox"> Atomic Structure</li>
+                        <li><input type="checkbox"> Periodic Chemistry</li>
+                        <li><input type="checkbox"> Interatomic Bonds</li>
+                        <li><input type="checkbox"> Intermolecular Bonds</li>
+                        <li><input type="checkbox"> Hybridization</li>
+                        <li><input type="checkbox"> Amount of Substance & The Mole</li>
+                        <li><input type="checkbox"> Chemical Reactions, Equations & Stoichiometry </li>
+                        <li><input type="checkbox"> Nuclear Chemistry (Radioactivity)</li>
+                        <li><input type="checkbox"> States of Matter</li>
+                        <li><input type="checkbox"> Preparation of Gases</li>
+                        <li><input type="checkbox"> Energy and Energy Changes</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="inorganic">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="chemistry-inorganic-list">Inorganic Chemistry</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="chemistry-inorganic-list">
+                        <li><input type="checkbox"> Periodic Chemistry 2 (Inorganic Chemistry)</li>
+                        <li><input type="checkbox"> Rates of Reactions</li>
+                        <li><input type="checkbox"> Chemical Equilibrium</li>
+                        <li><input type="checkbox"> Acids, Bases and Salts</li>
+                        <li><input type="checkbox"> Solubility</li>
+                        <li><input type="checkbox"> Redox Reactions</li>
+                        <li><input type="checkbox"> Electrochemical Cells</li>
+                        <li><input type="checkbox"> Electrolysis</li>
+                        <li><input type="checkbox"> Chemistry, Industry and Environment</li>
+                        <li><input type="checkbox"> Biotechnology</li>
+                        <li><input type="checkbox"> Separation and purification of mixtures</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="organic">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="chemistry-organic-list">Organic Chemistry</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="chemistry-organic-list">
+                        <li><input type="checkbox"> Organic Chemistry: Introduction to Organic Chemistry</li>
+                        <li><input type="checkbox"> Organic Chemistry: Alkanes</li>
+                        <li><input type="checkbox"> Organic Chemistry: Alenes</li>
+                        <li><input type="checkbox"> Organic Chemistry: Alkynes</li>
+                        <li><input type="checkbox"> Organic Chemistry: Benzene</li>
+                        <li><input type="checkbox"> Organic Chemistry: Alkanols</li>
+                        <li><input type="checkbox"> Organic Chemistry: Alkanoic Acids</li>
+                        <li><input type="checkbox"> Organic Chemistry: Alkylalkanoates</li>
+                        <li><input type="checkbox"> Organic Chemistry: Amides and Amines</li>
+                        <li><input type="checkbox"> Organic Chemistry: Amino Acids</li>
+                        <li><input type="checkbox"> Organic Chemistry: Fats and Oils</li>
+                        <li><input type="checkbox"> Organic Chemistry: Polymer 1 (Natural Polymers)</li>
+                        <li><input type="checkbox"> Organic Chemistry: Polymwer 2 (Synthetic Polymers)</li>
+                        <li><input type="checkbox"> Organic Chemistry: Empirical and Molecular Formulae of Organic Compounds</li>
+                        <li><input type="checkbox"> Organic Chemistry: Functional Groups</li>
+                    </ol>
+                </div>
+                <div class="progress-bar-container" aria-label="Progress for Chemistry">
+                    <div class="progress-bar" id="progress-chemistry" style="width:0%">0%</div>
+                </div>
+                <button class="done-btn" type="button">Done</button>
+            </div>
+            <div class="card" id="coremaths">
+                <h2>Core Mathematics</h2>
+                <input type="text" class="topic-search" placeholder="Filter topics..." aria-label="Filter Core Mathematics topics">
+                <button class="reset-btn" type="button" aria-label="Reset Core Mathematics progress">Reset</button>
+                <div class="collapsible-section" data-section="algebra">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="coremaths-algebra-list">Algebra & Numbers</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="coremaths-algebra-list">
+                        <li><input type="checkbox"> Sets and Operations on Sets</li>
+                        <li><input type="checkbox"> Real Number System</li>
+                        <li><input type="checkbox"> Algebraic Expression</li>
+                        <li><input type="checkbox"> Number Bases</li>
+                        <li><input type="checkbox"> Linear Equattions and Inequalities</li>
+                        <li><input type="checkbox"> Change of Subject and Substitution into Formulae</li>
+                        <li><input type="checkbox"> Relations, Mappings and Functions</li>
+                        <li><input type="checkbox"> Simultaneous Equations in Two Variables</li>
+                        <li><input type="checkbox"> Indices</li>
+                        <li><input type="checkbox"> Logarithims</li>
+                        <li><input type="checkbox"> Surds</li>
+                        <li><input type="checkbox"> Percentages 1</li>
+                        <li><input type="checkbox"> Percentages 2</li>
+                        <li><input type="checkbox"> Variation</li>
+                        <li><input type="checkbox"> Sequences</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="geometry">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="coremaths-geometry-list">Geometry & Mensuration</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="coremaths-geometry-list">
+                        <li><input type="checkbox"> Plane Geometry 1</li>
+                        <li><input type="checkbox"> Coordinate Geometry</li>
+                        <li><input type="checkbox"> Ratio, Proportion and Rates</li>
+                        <li><input type="checkbox"> Modular Arithmetic</li>
+                        <li><input type="checkbox"> Bearings</li>
+                        <li><input type="checkbox"> Rigid Motion (Transformation)</li>
+                        <li><input type="checkbox"> Quadratic Functions and Equations</li>
+                        <li><input type="checkbox"> Plane Geometry 1</li>
+                        <li><input type="checkbox"> Mensuration 1</li>
+                        <li><input type="checkbox"> Mensuration 2</li>
+                        <li><input type="checkbox"> Construction</li>
+                        <li><input type="checkbox"> Enlargement and Similarities</li>
+                        <li><input type="checkbox"> The Earth as a Sphere (Global Mathematics) </li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="trig">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="coremaths-trig-list">Trigonometry & Statistics</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="coremaths-trig-list">
+                        <li><input type="checkbox"> Trignometry 1</li>
+                        <li><input type="checkbox"> Trignometry 2</li>
+                        <li><input type="checkbox"> Probability</li>
+                        <li><input type="checkbox"> Statistics</li>
+                        <li><input type="checkbox"> Interpretaion of Linear and Quadratic Graphs</li>
+                        <li><input type="checkbox"> Logical Reasoning</li>
+                        <li><input type="checkbox"> Matrices</li>
+                        <li><input type="checkbox"> Linear Inequalities in Two Variables</li>
+                        <li><input type="checkbox"> Integration</li>
+                    </ol>
+                </div>
+                <div class="progress-bar-container" aria-label="Progress for Core Mathematics">
+                    <div class="progress-bar" id="progress-coremaths" style="width:0%">0%</div>
+                </div>
+                <button class="done-btn" type="button">Done</button>
+            </div>
+            <div class="card" id="biology">
+                <h2>Biology</h2>
+                <input type="text" class="topic-search" placeholder="Filter topics..." aria-label="Filter Biology topics">
+                <button class="reset-btn" type="button" aria-label="Reset Biology progress">Reset</button>
+                <div class="collapsible-section" data-section="cells">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="biology-cells-list">Cells & Biochemistry</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="biology-cells-list">
+                        <li><input type="checkbox"> Cell Structure and Function</li>
+                        <li><input type="checkbox"> Biological Molecules</li>
+                        <li><input type="checkbox"> Enzymes</li>
+                        <li><input type="checkbox"> Nutrition</li>
+                        <li><input type="checkbox"> Transport in Plants</li>
+                        <li><input type="checkbox"> Transport in Animals</li>
+                        <li><input type="checkbox"> Respiration</li>
+                        <li><input type="checkbox"> Excretion</li>
+                        <li><input type="checkbox"> Coordination</li>
+                        <li><input type="checkbox"> Reproduction</li>
+                        <li><input type="checkbox"> Growth</li>
+                        <li><input type="checkbox"> Genetics</li>
+                        <li><input type="checkbox"> Evolution</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="ecology">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="biology-ecology-list">Ecology & Environment</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="biology-ecology-list">
+                        <li><input type="checkbox"> Ecology</li>
+                        <li><input type="checkbox"> Microorganisms</li>
+                        <li><input type="checkbox"> Disease and Immunity</li>
+                        <li><input type="checkbox"> Homeostasis</li>
+                        <li><input type="checkbox"> Movement</li>
+                        <li><input type="checkbox"> Sense Organs</li>
+                        <li><input type="checkbox"> Hormones</li>
+                        <li><input type="checkbox"> Photosynthesis</li>
+                        <li><input type="checkbox"> Classification</li>
+                        <li><input type="checkbox"> Viruses</li>
+                        <li><input type="checkbox"> Bacteria</li>
+                        <li><input type="checkbox"> Fungi</li>
+                        <li><input type="checkbox"> Protists</li>
+                        <li><input type="checkbox"> Plants</li>
+                        <li><input type="checkbox"> Animals</li>
+                        <li><input type="checkbox"> Environment</li>
+                        <li><input type="checkbox"> Conservation</li>
+                    </ol>
+                </div>
+                <div class="progress-bar-container" aria-label="Progress for Biology">
+                    <div class="progress-bar" id="progress-biology" style="width:0%">0%</div>
+                </div>
+                <button class="done-btn" type="button">Done</button>
+            </div>
+            <div class="card" id="english">
+                <h2>English Language</h2>
+                <input type="text" class="topic-search" placeholder="Filter topics..." aria-label="Filter English Language topics">
+                <button class="reset-btn" type="button" aria-label="Reset English Language progress">Reset</button>
+                <div class="collapsible-section" data-section="comprehension">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="english-comprehension-list">Comprehension & Writing</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="english-comprehension-list">
+                        <li><input type="checkbox"> Comprehension</li>
+                        <li><input type="checkbox"> Summary</li>
+                        <li><input type="checkbox"> Grammar</li>
+                        <li><input type="checkbox"> Vocabulary</li>
+                        <li><input type="checkbox"> Essay Writing</li>
+                        <li><input type="checkbox"> Letter Writing</li>
+                        <li><input type="checkbox"> Speech Writing</li>
+                        <li><input type="checkbox"> Report Writing</li>
+                    </ol>
+                </div>
+                <div class="collapsible-section" data-section="listening">
+                    <button class="collapsible-toggle" aria-expanded="false" aria-controls="english-listening-list">Listening & Oral</button>
+                    <label class="complete-all-label"><input type="checkbox" class="complete-all"> Complete All</label>
+                    <ol class="topics-list" id="english-listening-list">
+                        <li><input type="checkbox"> Listening Comprehension</li>
+                        <li><input type="checkbox"> Oral English</li>
+                    </ol>
+                </div>
+                <div class="progress-bar-container" aria-label="Progress for English Language">
+                    <div class="progress-bar" id="progress-english" style="width:0%">0%</div>
+                </div>
+                <button class="done-btn" type="button">Done</button>
+            </div>
+        </main>
+    </div>
+    <div id="done-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display:none;">
+      <div class="modal-content">
+        <h3 id="modal-title">Congratulations!</h3>
+        <p id="modal-message"></p>
+        <button id="close-modal" class="done-btn">Close</button>
+      </div>
+    </div>
+    <script>
+    // Enhanced Progress Tracker: modular JS, event delegation, toast, debounce, accessibility
+    (function() {
+        // --- Sidebar logic ---
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarToggle = document.querySelector('.sidebar-toggle');
+        let sidebarOpen = window.innerWidth > 700;
+        function setSidebar(open) {
+            sidebarOpen = open;
+            sidebar.classList.toggle('collapsed', !open);
+            sidebarToggle.setAttribute('aria-expanded', open);
+        }
+        function handleResize() {
+            if (window.innerWidth <= 700) {
+                setSidebar(false);
+                sidebarToggle.style.display = 'block';
+            } else {
+                setSidebar(true);
+                sidebarToggle.style.display = 'none';
+            }
+        }
+        sidebarToggle.addEventListener('click', () => setSidebar(!sidebarOpen));
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        // --- Card switching with fade/slide animation ---
+        function showCard(page) {
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+            const card = document.getElementById(page);
+            if (card) {
+                card.classList.add('active');
+                if (window.innerWidth < 900) card.scrollIntoView({behavior:'smooth', block:'start'});
+            }
+            document.querySelectorAll('.sidebar button').forEach(btn => btn.classList.remove('active'));
+            const btn = document.querySelector(`.sidebar button[data-page="${page}"]`);
+            if (btn) btn.classList.add('active');
+            if (window.innerWidth <= 700) setSidebar(false);
+        }
+        sidebar.addEventListener('click', function(e) {
+            if (e.target.matches('button[data-page]')) showCard(e.target.dataset.page);
+        });
+        sidebar.addEventListener('keydown', function(e) {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('button[data-page]')) showCard(e.target.dataset.page);
+        });
+        showCard('home');
+        // --- Utility: localStorage helpers ---
+        function getProgressKey(subject) { return `progress_${subject}`; }
+        function getSectionKey(subject, section) { return `section_${subject}_${section}`; }
+        function saveProgress(subject, arr) { localStorage.setItem(getProgressKey(subject), JSON.stringify(arr)); }
+        function loadProgress(subject) { try { return JSON.parse(localStorage.getItem(getProgressKey(subject))) || []; } catch { return []; } }
+        function saveSectionState(subject, section, open) { localStorage.setItem(getSectionKey(subject, section), open ? '1' : '0'); }
+        function loadSectionState(subject, section) { return localStorage.getItem(getSectionKey(subject, section)) === '1'; }
+        // --- Toast/snackbar notification ---
+        const toast = document.getElementById('toast');
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        // --- Collapsible section logic ---
+        function setupCollapsibleSections(card, subject) {
+            card.addEventListener('click', function(e) {
+                if (e.target.classList.contains('collapsible-toggle')) {
+                    const section = e.target.closest('.collapsible-section');
+                    const topicsList = section.querySelector('.topics-list');
+                    const sectionName = section.getAttribute('data-section');
+                    const nowOpen = !section.classList.contains('open');
+                    section.classList.toggle('open', nowOpen);
+                    e.target.setAttribute('aria-expanded', nowOpen);
+                    topicsList.style.display = nowOpen ? 'block' : 'none';
+                    saveSectionState(subject, sectionName, nowOpen);
+                }
+            });
+            card.querySelectorAll('.collapsible-section').forEach(section => {
+                const btn = section.querySelector('.collapsible-toggle');
+                const topicsList = section.querySelector('.topics-list');
+                const sectionName = section.getAttribute('data-section');
+                const open = loadSectionState(subject, sectionName);
+                section.classList.toggle('open', open);
+                btn.setAttribute('aria-expanded', open);
+                topicsList.style.display = open ? 'block' : 'none';
+            });
+        }
+        // --- Checkbox persistence logic ---
+        function setupCheckboxPersistence(card, subject) {
+            // Helper: get all topic checkboxes (exclude .complete-all)
+            function getTopicCheckboxes(scope) {
+                return Array.from(scope.querySelectorAll('input[type="checkbox"]:not(.complete-all)'));
+            }
+            // Helper: get all .complete-all checkboxes in card
+            function getCompleteAllCheckboxes() {
+                return Array.from(card.querySelectorAll('input.complete-all'));
+            }
+            // Handle .complete-all logic for collapsible sections
+            card.addEventListener('change', function(e) {
+                if (e.target.classList.contains('complete-all')) {
+                    // Toggle all topic checkboxes in this section
+                    const section = e.target.closest('.collapsible-section');
+                    if (!section) return;
+                    const topics = getTopicCheckboxes(section);
+                    topics.forEach(cb => { cb.checked = e.target.checked; });
+                    // Save and update
+                    const allTopics = getTopicCheckboxes(card);
+                    const arr = allTopics.map(c => c.checked ? 1 : 0);
+                    saveProgress(subject, arr);
+                    updateProgress(subject);
+                    announceProgress(subject);
+                    return;
+                }
+                if (e.target.type === 'checkbox' && !e.target.classList.contains('complete-all')) {
+                    // Save only topic checkboxes
+                    const allTopics = getTopicCheckboxes(card);
+                    const arr = allTopics.map(c => c.checked ? 1 : 0);
+                    saveProgress(subject, arr);
+                    updateProgress(subject);
+                    announceProgress(subject);
+                    // Sync .complete-all for each section
+                    card.querySelectorAll('.collapsible-section').forEach(section => {
+                        const topics = getTopicCheckboxes(section);
+                        const completeAll = section.querySelector('input.complete-all');
+                        if (completeAll) {
+                            completeAll.checked = topics.length > 0 && topics.every(cb => cb.checked);
+                        }
+                    });
+                    // Toast on 100% complete
+                    const checked = arr.filter(Boolean).length;
+                    if (checked === allTopics.length && allTopics.length > 0) {
+                        showToast('Congratulations! You completed all topics for this subject.');
+                    }
+                }
+            });
+            // Restore state
+            const allTopics = getTopicCheckboxes(card);
+            const checkedArr = loadProgress(subject);
+            allTopics.forEach((cb, i) => { cb.checked = !!checkedArr[i]; });
+            // Sync .complete-all checkboxes on load
+            card.querySelectorAll('.collapsible-section').forEach(section => {
+                const topics = getTopicCheckboxes(section);
+                const completeAll = section.querySelector('input.complete-all');
+                if (completeAll) {
+                    completeAll.checked = topics.length > 0 && topics.every(cb => cb.checked);
+                }
+            });
+        }
+        // --- Progress bar logic ---
+        function updateProgress(subject) {
+            const card = document.getElementById(subject);
+            if (!card) return;
+            // Only count topic checkboxes (not .complete-all)
+            const checkboxes = Array.from(card.querySelectorAll('input[type="checkbox"]:not(.complete-all)'));
+            const checked = checkboxes.filter(cb => cb.checked).length;
+            const total = checkboxes.length;
+            const percent = total > 0 ? Math.round((checked/total)*100) : 0;
+            const bar = card.querySelector('.progress-bar');
+            if (bar) {
+                bar.style.width = percent + '%';
+                bar.textContent = percent + '%';
+            }
+        }
+        // --- Reset button logic ---
+        function setupReset(card, subject) {
+            card.addEventListener('click', function(e) {
+                if (e.target.classList.contains('reset-btn')) {
+                    if (!confirm('Reset all progress for this subject?')) return;
+                    const checkboxes = card.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => { cb.checked = false; });
+                    saveProgress(subject, Array(checkboxes.length).fill(0));
+                    updateProgress(subject);
+                    announceProgress(subject);
+                }
+            });
+        }
+        // --- Search/filter logic with debounce ---
+        function setupSearch(card) {
+            let debounceTimer;
+            card.addEventListener('input', function(e) {
+                if (e.target.classList.contains('topic-search')) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        const val = e.target.value.trim().toLowerCase();
+                        card.querySelectorAll('.topics-list li').forEach(li => {
+                            const text = li.textContent.toLowerCase();
+                            li.style.display = text.includes(val) ? '' : 'none';
+                        });
+                    }, 180);
+                }
+            });
+        }
+        // --- Accessibility: announce progress for screen readers ---
+        let liveRegion = document.createElement('div');
+        liveRegion.setAttribute('aria-live', 'polite');
+        liveRegion.setAttribute('role', 'status');
+        liveRegion.style.position = 'absolute';
+        liveRegion.style.left = '-9999px';
+        document.body.appendChild(liveRegion);
+        function announceProgress(subject) {
+            const card = document.getElementById(subject);
+            if (!card) return;
+            const checkboxes = card.querySelectorAll('input[type="checkbox"]');
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const total = checkboxes.length;
+            const percent = total > 0 ? Math.round((checked/total)*100) : 0;
+            liveRegion.textContent = `${subject.replace(/([A-Z])/g, ' $1')}: ${percent}% complete (${checked} of ${total})`;
+        }
+        // --- Setup for all subject cards ---
+        const subjectCards = [
+            {id: 'emaths', name: 'emaths'},
+            {id: 'physics', name: 'physics'},
+            {id: 'chemistry', name: 'chemistry'},
+            {id: 'coremaths', name: 'coremaths'},
+            {id: 'biology', name: 'biology'},
+            {id: 'english', name: 'english'}
+        ];
+        subjectCards.forEach(({id, name}) => {
+            const card = document.getElementById(id);
+            if (!card) return;
+            setupCollapsibleSections(card, name);
+            setupCheckboxPersistence(card, name);
+            setupReset(card, name);
+            setupSearch(card);
+            updateProgress(name);
+        });
+        // --- Modal logic for Done button ---
+        const modal = document.getElementById('done-modal');
+        const modalMsg = document.getElementById('modal-message');
+        const closeModalBtn = document.getElementById('close-modal');
+        let lastActiveBtn = null;
+        document.body.addEventListener('click', function(e) {
+            if (e.target.id === 'close-modal') {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                if (lastActiveBtn) lastActiveBtn.focus();
+                return;
+            }
+            if (e.target.classList.contains('done-btn')) {
+                const card = e.target.closest('.card');
+                if (!card) return;
+                const subject = card.id;
+                const checkboxes = card.querySelectorAll('input[type="checkbox"]');
+                const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+                const total = checkboxes.length;
+                const percent = total > 0 ? Math.round((checked/total)*100) : 0;
+                modalMsg.textContent = `You have completed ${percent}% (${checked} of ${total}) of the topics in this subject.`;
+                modal.style.display = 'flex';
+                modal.setAttribute('aria-hidden', 'false');
+                closeModalBtn.focus();
+                lastActiveBtn = e.target;
+            }
+        });
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                if (lastActiveBtn) lastActiveBtn.focus();
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (modal.style.display === 'flex' && e.key === 'Escape') {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                if (lastActiveBtn) lastActiveBtn.focus();
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

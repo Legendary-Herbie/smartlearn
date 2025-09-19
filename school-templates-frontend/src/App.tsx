@@ -21,32 +21,5 @@ function App() {
     </Layout>
   );
 }
-export default App;
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Header from './templates/Header/Header';
-import Footer from './templates/Footer/Footer';
-import Layout from './templates/Layout/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import SchoolHome from './templates/School/SchoolHome';
-import SchoolProfile from './templates/School/SchoolProfile';
-
-const App: React.FC = () => {
-  return (
-    <Router>
-      <Layout>
-        <Header />
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/about" component={About} />
-          <Route path="/school" exact component={SchoolHome} />
-          <Route path="/school/profile" component={SchoolProfile} />
-        </Switch>
-        <Footer />
-      </Layout>
-    </Router>
-  );
-};
 
 export default App;
