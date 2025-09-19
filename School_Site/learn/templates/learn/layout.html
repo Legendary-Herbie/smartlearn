@@ -1,0 +1,95 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Presec Legon Study Page - Your gateway to academic excellence.">
+    <meta name="keywords" content="Presec, Legon, Study, Education, Resources, Subjects, News">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    
+    <link rel="icon" href="{% static 'assets/images/fav.png' %}" type="image/png">
+    
+    {% block links %}
+    {% endblock %}
+    
+    <title>
+        {% block title %}
+            Presec Study Page
+        {% endblock  %}    
+    </title>
+</head>
+<body>
+    <main>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-burger" id="navbarBurger" tabindex="0" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <img class="favicon" src="{% static 'assets/images/fav.png' %}" alt="Presec Legon Badge" width="50" height="50">
+                    <ul class="navbar-menu" id="navbarMenu" style="display:'none'">
+                        <li><a href="{% url 'learn:Home' %}">🏠 Home</a></li>
+                        <li class = "has-dropdown">
+                            <a href="{% url 'learn:Profile' %}">👤 Profile</a>
+                            <ul class = "dropdown">
+                                <li><a href ="{% url 'learn:Profile' %}">View Profile</a></li>
+                                <li><a href="/">Progress</a></li>
+                                <li><a href="/">Plans</a></li>
+                                <li><a href="{% url 'learn:Logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                        <li class="has-dropdown">
+                            <a href="{% url 'learn:Subjects' %}">📚 Subjects</a>
+                            <ul class="dropdown">
+                                <li><a href="{% url 'learn:Subjects' %}#core-sub">Core Subjects</a></li>
+                                <li><a href="{% url 'learn:Subjects' %}#Sci-elect">General Science</a></li>
+                                <li><a href="{% url 'learn:Subjects' %}#Bus-elect">Business Electives</a></li>
+                                <li><a href="{% url 'learn:Subjects' %}#Gen-elect">General Arts</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'learn:Resources' %}">🗃️ Resources</a></li>
+                        <li><a href="{% url 'learn:News' %}">🧾 News</a></li>
+                    </ul>
+                    <ul class = "navbar-icons">
+                        <li><a href = "{% url 'learn:Home' %}"> 🏠 </a></li>
+                        <li><a href = "{% url 'learn:Profile' %}"> 👤 </a></li>
+                        <li><a href = "{% url 'learn:Subjects' %}"> 📚 </a></li>
+                        <li><a href = "{% url 'learn:Resources' %}"> 🗃️ </a></li>
+                        <li><a href = "{% url 'learn:News' %}"> 🧾 </a></li>
+                    </ul>
+                <div id = "user-tools">
+                {% if user.is_authenticated %}
+                    <span style = "text-align:right">Welcome, <strong>{{ user.username }}.</strong> </span>
+                    <div class="holder">
+                        <div>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'learn:Login' %}">Login</a> |
+                    <a href="{% url 'learn:Register' %}">Sign Up</a>
+                {% endif %}
+                </div>
+            </div>
+        </nav>
+        {% block content %}
+        <div class="announcement section-block">
+            <h1>COMING SOON</h1>
+        </div>
+        {% endblock  %}
+    </main>
+    <script src= "{% static 'js/navbar.js' %}"></script>
+    {% block scripts %}
+    <!-- Additional scripts will be added here -->  
+    {% endblock %}
+
+    <footer>
+        <p>&copy; 2023 Presec Legon. All rights reserved.</p>
+        <p><a href = "{% url 'learn:About' %}">About Us</a></p>
+    </footer>
+</body>
+</html>

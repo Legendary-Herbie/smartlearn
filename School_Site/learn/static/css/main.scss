@@ -1,0 +1,82 @@
+@import 'variables.scss';
+// main.scss - Global styles for the entire website
+
+body {
+  background: linear-gradient(to bottom, #f5f8ff, #e9ecf3);
+  color: $primary-color;
+  font-family: $font-main;
+  padding: $padding-main;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $primary-color; 
+  font-weight: $font-weight-bold ;
+  margin: $margin-main; 
+}
+
+p {
+  color: $text-color;
+  margin: 0.3rem;
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+  &:hover {
+    color: $hover-color;
+    text-decoration: underline;
+  }
+}
+
+header {
+  background-color: $header-bg;
+  padding: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  background-color: $footer-bg;
+  color: $text-color;
+  padding: 10px;
+  text-align: justify;
+}
+
+main {
+  padding:$padding-main ;
+  min-height: fit-content;
+}
+
+button, .btn {
+  background-color: $button-bg;
+  color: $button-color;
+  border: $button-border;
+  border-radius: $border-radius;
+  padding: $button-padding;
+  margin: 0.5rem ;
+  cursor: $cursor-pointer;
+  &:hover {
+    background-color: $button-hover-bg;
+    color: $button-hover-color;
+  }
+}
+
+input, textarea, select {
+  border: $input-border;
+  border-radius: $border-radius;
+  padding: $input-padding;
+  font-size: $input-font-size;
+  margin: $input-margin;
+}
+
+section {
+  margin: $section-margin;
+  padding: $section-padding;
+}
+
+.container {
+  max-width: $container-max-width;
+  margin: $container-margin;
+  padding: $container-padding;
+}
+
+// Add more global styles as needed

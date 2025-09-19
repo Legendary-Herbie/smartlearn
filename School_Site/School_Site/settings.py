@@ -32,6 +32,11 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     'learn',
+    'recall',
+    'time_management',
+    # API and CORS
+    'rest_framework',
+    'corsheaders',
     'crispy_forms',
     'crispy_bootstrap4',
     'django.contrib.admin',
@@ -43,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,7 +62,7 @@ ROOT_URLCONF = 'School_Site.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "learn" / "templates"],
+        'DIRS': [BASE_DIR / "learn" / "templates", BASE_DIR / 'school-templates-frontend' / 'build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,8 +122,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "learn" / "static"]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "learn" / "static", BASE_DIR / 'school-templates-frontend' / 'build' / 'static']
 
 # Default configuration for crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

@@ -16,8 +16,8 @@ class UserProfile(models.Model):
 
 class Plan(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='plans' ,null=True, blank=True)
-    subject = models.CharField(max_length=100)
-    goal= models.CharField(max_length=255)
+    subject = models.CharField(max_length=50)
+    goal = models.CharField(max_length=255)
     days = models.IntegerField(null = 5)
     hours = models.IntegerField(null = 4)
     start_date = models.DateField(auto_now=True)

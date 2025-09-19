@@ -56,10 +56,10 @@ def home(request):
         end = request.POST['end']
         new_plan = Plan(user = current_user, subject = subject , goal = goal, days = days, hours = hours, start_date = start, end_date = end)
         new_plan.save()
-    return render(request, 'HomePage.html', context)
+    return render(request, 'learn/HomePage.html', context)
 
 def subjects(request):
-    return render(request, 'Subjects.html',
+    return render(request, 'learn/Subjects.html',
     {
         'core_subjects': CORE_SUBJECTS,
         'general_science_electives' : GENERAL_SCIENCE_ELECTIVES,
@@ -69,11 +69,11 @@ def subjects(request):
 
 @login_required
 def resources(request):
-    return render(request,'Resources.html')
+    return render(request,'learn/Resources.html')
 
 class UserProfileView(LoginRequiredMixin, DetailView):
     model = UserProfile
-    template_name = 'Profile.html'
+    template_name = 'learn/Profile.html'
     context_object_name = 'user_data'
 
     def get_object(self):
@@ -82,15 +82,15 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
 @login_required
 def news(request):
-    return render(request,'News.html')
+    return render(request,'learn/News.html')
 
 @login_required
 def progress(request):
-    return render(request,'Progress.html')
+    return render(request,'learn/Progress.html')
 
 @login_required
 def createplan(request):
-    return render(request,'CreatePlan.html', {'subjects': subjectslist} )
+    return render(request,'learn/CreatePlan.html', {'subjects': subjectslist} )
 
 def register(request):
     if request.method == 'POST':
@@ -110,10 +110,10 @@ def register(request):
             login(request, user)
             return HttpResponseRedirect(reverse('Home'))
         else: 
-            return render(request, 'Authentication/Login.html')
+            return render(request, 'learn/Authentication/Login.html')
     else:
         form = UserRegisterForm()
-    return render(request, 'Authentication/Register.html', {'form': form})
+    return render(request, 'learn/Authentication/Register.html', {'form': form})
 
 def logout_view(request):
     user = request.user
@@ -122,61 +122,61 @@ def logout_view(request):
     return redirect('learn:Home')
 
 def about(request):
-    return render(request,'About.html')
+    return render(request,'learn/About.html')
 
 def accounting(request):
-    return render(request,'BusinessElectives/Accounting.html')
+    return render(request,'learn/BusinessElectives/Accounting.html')
 
 def business_management(request):
-    return render(request,'BusinessElectives/BusinessManagement.html')
+    return render(request,'learn/BusinessElectives/BusinessManagement.html')
 
 def costing(request):
-    return render(request,'BusinessElectives/Costing.html')
+    return render(request,'learn/BusinessElectives/Costing.html')
 
 def economics(request):
-    return render(request,'BusinessElectives/Economics.html')
+    return render(request,'learn/BusinessElectives/Economics.html')
 
 def core_mathematics(request):
-    return render(request,'CoreSubjects/CoreMathematics.html')
+    return render(request,'learn/CoreSubjects/CoreMathematics.html')
 
 def core_ict(request):
-    return render(request,'CoreSubjects/Core_ICT.html')
+    return render(request,'learn/CoreSubjects/Core_ICT.html')
 
 def english(request):
-    return render(request,'CoreSubjects/English.html')
+    return render(request,'learn/CoreSubjects/English.html')
 
 def interscience(request):
-    return render(request,'CoreSubjects/IntegratedScience.html')
+    return render(request,'learn/CoreSubjects/IntegratedScience.html')
 
 def social_studies(request):
-    return render(request,'CoreSubjects/SocialStudies.html')
+    return render(request,'learn/CoreSubjects/SocialStudies.html')
 
 def crs(request):
-    return render(request,'GeneralArtsElectives/CRS.html')
+    return render(request,'learn/GeneralArtsElectives/CRS.html')
 
 def french(request):
-    return render(request,'GeneralArtsElectives/French.html')
+    return render(request,'learn/GeneralArtsElectives/French.html')
 
 def geography(request):
-    return render(request,'GeneralArtsElectives/Geography.html')
+    return render(request,'learn/GeneralArtsElectives/Geography.html')
 
 def government(request):
-    return render(request,'GeneralArtsElectives/Government.html')
+    return render(request,'learn/GeneralArtsElectives/Government.html')
 
 def history(request):
-    return render(request,'GeneralArtsElectives/History.html')
+    return render(request,'learn/GeneralArtsElectives/History.html')
 
 def literature(request):
-    return render(request,'GeneralArtsElectives/Literature.html')
+    return render(request,'learn/GeneralArtsElectives/Literature.html')
 
 def biology(request):
-    return render(request,'GeneralScienceElectives/Biology.html')
+    return render(request,'learn/GeneralScienceElectives/Biology.html')
 
 def chemistry(request):
-    return render(request,'GeneralScienceElectives/Chemistry.html')
+    return render(request,'learn/GeneralScienceElectives/Chemistry.html')
 
 def elective_mathematics(request):
-    return render(request,'GeneralScienceElectives/ElectiveMathematics.html')
+    return render(request,'learn/GeneralScienceElectives/ElectiveMathematics.html')
 
 def physics(request):
-    return render(request,'GeneralScienceElectives/Physics.html')
+    return render(request,'learn/GeneralScienceElectives/Physics.html')

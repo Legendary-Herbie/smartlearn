@@ -1,15 +1,88 @@
-// Variables
-$primary-color: #004aad;
-$secondary-color: #d7e5fa;
-$link-color:#1468d6;
-$hover-color: red;
-$accent-color: red;
-$text-color: #333;
-$background-color: #f9f9f9;
-$card-bg: #fff;
+// COLORS
+$bg-color: #f5f8ff;
+$primary-col: #abbcdd;
+$nav-bg-color: #0d2b66;
+$menu-bg-color:#ffffff;
+$text-color: #333333;
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$hover-color: rgba(255, 8, 0, 0.9);
+$link-color: rgb(56, 56, 230);
+$primary-bg: #f5f8ff;             // Very light blueish-white for a calm base
+$primary-color: #102e6b;          // PRESEC royal blue – strong for headings and text
+$link-color: #0d47a1;                // Deeper blue for clarity and brand consistency
+$header-bg: #ffffff;                 // Clean white header for contrast
+$footer-bg: #dbe6ff;                 // Light, soft blue – calm and distinct from content
+$card-bg: #fff;                // White background for cards to keep focus on content
+
+// TYPOGRAPHY
+$font-family: 'Arial', sans-serif;
+$font-size: 16px;
+$font-main: 'Poppins', sans-serif;   // Clean and friendly with academic sharpness
+$font-weight-bold: 700;              // Strong bold for clear headings
+
+// LAYOUT & SPACING
 $border-radius: 10px;
-$box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+$border-radius: 10px;                // Slightly rounded edges for modern feel
+$padding-main: 0.5rem;                 // Balanced spacing for all devices
+$margin-main: 1rem;                  // Consistent margins
+$container-max-width: 1200px;
+$container-margin: 0 auto;        // Center horizontally
+$container-padding: 0 1rem;       // Responsive horizontal padding
+$container-max-width: 1200px;     // Maximum width for large screens
+$section-margin: 2rem 0;          // Top and bottom separation
+$section-padding: 2rem;           // Inner content breathing room
+
+// EFFECTS
+$box-shadow-main: 0 4px 10px rgba(16, 46, 107, 0.1); // Blue-tinted shadow for consistency
+
+// BUTTONS
+$button-bg: #102e6b;              // PRESEC royal blue
+$button-color: #ffffff;           // White text
+$button-border: none;             // Clean flat design (can change to "1px solid #0d3a8c" if needed)
+$button-padding: 1.2rem 1.2rem;   // Comfortable size
+$cursor-pointer: pointer;         // Obvious click behavior
+$button-hover-bg: #ff0000;        // Slightly darker blue for hover
+$button-hover-color: #ffffff;     // Keep text color consistent on hover
+
+// INPUT FIELDS
+$input-border: 1px solid #b0c4ff; // Light blue-gray border
+$input-padding: 0.5rem 0.75rem;   // Enough padding for readability
+$input-font-size: 1rem;           // Standard readable input text
+$input-margin: 0.5rem 0;          // Space between inputs
+
+// NAVIGATION BAR
+$nav-bg: #92a9d4;                 // light PRESEC blue
+$nav-color: #ffffff;              // White text for contrast
+$nav-padding: 1rem 2rem;          // Balanced spacing
+
+$text-color: #222;
+$card-bg: #fff;
+$background-color: #f5f8ff;
+$max-width: 1200px;
+$border-radius: 10px;
+$box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 $transition: 0.2s;
-$max-width: 1500px;
-$breakpoint-md: 700px;
+$breakpoint-md: 900px;
+$breakpoint-sm: 600px;
+
+
+// Modern, accessible color scheme
+$text-color: #1a1a1a;
+$card-bg: #ffffff;
+$link-color: #2563eb;
+$hover-color: #ea580c;
+$primary-color: #2563eb;
+$secondary-color: #f1f5f9;
+$accent-color: #fc1313c4;
+$background-color: #f8fafc;
+
+// Layout and effects
+$max-width: 1200px;
+$border-radius: 12px;
+$box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+$transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+
+// Responsive breakpoints
+$breakpoint-md: 900px;
 $breakpoint-sm: 600px;

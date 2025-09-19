@@ -1,0 +1,7 @@
+Django==5.2.2
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+Pillow
+crispy-bootstrap4
+django-crispy-forms
