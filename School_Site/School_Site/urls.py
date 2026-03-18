@@ -9,9 +9,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('', include('learn.urls')),
-    path('', include('time_management.urls')),
-    path('', include('recall.urls')),
+    path('', include('learn.urls'))
 ]
 
 # In production serve the React build's index.html for frontend routes

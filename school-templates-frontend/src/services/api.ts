@@ -28,28 +28,27 @@ export default {
     create: (d: any) => api.post("/flashcards/", d),
   },
 };
-import axios from 'axios';
 
 const API_BASE_URL = 'https://api.example.com'; // Replace with your actual API base URL
 
 export const fetchSchools = async () => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/schools`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching schools:', error);
-        throw error;
-    }
+  try {
+    const response = await axios.get(`${API_BASE_URL}/schools`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching schools:', error);
+    throw error;
+  }
 };
 
 export const fetchSchoolById = async (id) => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/schools/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error(`Error fetching school with id ${id}:`, error);
-        throw error;
-    }
+  try {
+    const response = await axios.get(`${API_BASE_URL}/schools/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching school with id ${id}:`, error);
+    throw error;
+  }
 };
 
 // Add more API functions as needed
